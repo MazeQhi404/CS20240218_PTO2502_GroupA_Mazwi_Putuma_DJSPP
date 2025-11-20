@@ -16,6 +16,17 @@ export default function Home() {
     const [sortBy, setSortBy] = useState('updated' ) // Sort option: updated, az, za
     const [selectedGenre, setSelectedGenre] = useState('all') //Selected genre filter
 
-    
+    //Fetch all shows once when page loads
+    useEffect(() => {
+        fetch('https://podcast-app.netlify.app')
+        .then(res => res.json())
+        .then(data => {
+            setShows(data)
+            setLoading(false)
+        })
+        .catch(() => setLoading(false))
+    }, [])
+
+
 
 }
