@@ -24,5 +24,13 @@ export function AudioProvider({ children }) {
         setCurrentEpisode(episode)
         setIsPlaying(true)
     }
+
+    // Toggle play/pause on the current audio element
+    const togglePlay = () => {
+        isPlaying ? audioRef.current.pause() : audioRef.current.play()
+        setIsPlaying(!isPlaying)
+    }
+
+    
 }
 
