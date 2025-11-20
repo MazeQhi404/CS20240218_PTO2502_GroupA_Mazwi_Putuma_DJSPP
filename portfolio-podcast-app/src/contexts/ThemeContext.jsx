@@ -14,5 +14,8 @@ export function ThemeProvider({ children }) {
         document.documentElement.classList.toggle('dark', theme === 'dark')
     }, [theme])
 
+    const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light')
     
+
+
 }
