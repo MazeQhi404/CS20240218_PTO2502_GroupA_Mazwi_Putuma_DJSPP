@@ -27,5 +27,17 @@ export function FavoritesProvider({ children }) {
         })
     }
 
-    
+    // Quick check if a given episode is already favorited
+    const isFavorite = (epidoeId) => favorites.some(f => f.id === epidoeId)
+
+    // Share the favorites array and the two helper functions with the app:
+
+    return (
+        <FavoritesContext.Provider value={{ favorites, toggleFavorite, isFavorite}}>
+            {children}
+        </FavoritesContext.Provider>
+    )
 }
+
+// Hook so any component can grab favorites easily
+export const useFavorites = () => useContext(FavoritesContext)
