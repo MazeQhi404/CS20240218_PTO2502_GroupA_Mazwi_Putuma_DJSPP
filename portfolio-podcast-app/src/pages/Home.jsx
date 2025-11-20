@@ -1,0 +1,8 @@
+import { useState, useEffect, useMemo } from 'react'
+import { Link } from 'react-roter-dom'
+import { GENRE_MAP } from '../data/genres'
+import Slider from 'react-slick'
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
+import PodcastCard from '../components/PodcastCard' 
+import RecommendedCarousel from '../components/RecommendedCarousel'
