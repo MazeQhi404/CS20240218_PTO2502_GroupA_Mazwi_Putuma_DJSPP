@@ -31,6 +31,41 @@ export function AudioProvider({ children }) {
         setIsPlaying(!isPlaying)
     }
 
-    
+    // Updates progress bar as audio plays and resets isPlaying when track ends:
+    useEffect(() => {
+        const audio = audioRef.current
+        const updateProgress = () => setProgress((audio.currentTime / audio.duration) * 100 || 0)
+
+        audio.addEventListener('timeupdate', updateProgress)
+        audio.addEventListener('ended', () => setIsPlaying(false))
+
+        //Cleanup listeners on unmount
+        return () => {
+            audio.removeEventListener('timeupdate', updateProgress)
+            audio.removeEventListener('ended', () => setIsPlaying(false))
+        }
+    }, []) // Empty dependency - runs once on mount
+
+    //Warnes user if they try to close/refresh the page while audio is playing:
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (isPlaying) {
+                e.preventDefault()
+                e.returnValue = '' //Triggers browser confirmation dialog
+            }
+        }
+        window.addEventListener('beforeunload', handleBeforeUnload)
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+    }, [isPlaying])
+
+    // Exposes audio state and controls to the entire component tree
+
+    return (
+        <AudioContext.Provider value={{ currentEpisode, isPlaying, progress, playEpisode, togglePlay }}>
+            {children}
+        </AudioContext.Provider>
+    )
 }
 
+// Custom Hook to access audio controls from any component :
+export const useAudio = () => useContext(AudioContext)
