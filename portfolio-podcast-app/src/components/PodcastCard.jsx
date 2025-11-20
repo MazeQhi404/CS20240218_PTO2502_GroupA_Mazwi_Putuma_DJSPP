@@ -11,7 +11,7 @@ export default function PodcastCard({ show }) {
       // Card container with hover shadow and dark mode support
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition">
         
-        // Podcast cover image – scales slightly on hover
+        // Podcast cover image - scales slightly on hover
         <img
           src={show.image}
           alt={show.title}
@@ -28,7 +28,7 @@ export default function PodcastCard({ show }) {
             {show.seasons} season{show.seasons > 1 ? 's' : ''}
           </p>
           
-          // Genre tags – converted from IDs using GENRE_MAP
+          // Genre tags - converted from IDs using GENRE_MAP
           <div className="flex flex-wrap gap-2 my-2">
             {show.genres.map(id => (
               <span key={id} className="genre-tag">
@@ -37,7 +37,7 @@ export default function PodcastCard({ show }) {
             ))}
           </div>
           
-          // Human-readable "Updated 3 days ago" text
+          // Human-readable text
           <p className="text-xs text-gray-500">
             Updated {formatDistanceToNow(new Date(show.updated), { addSuffix: true })}
           </p>
