@@ -17,4 +17,15 @@ export function FavoritesProvider({ children }) {
     useEffect(() => {
         localStorage.setItem('podcast-favorites', JSON.stringify(favorites))
     }, [favorites])
+
+    // Add or remove an episode from favorites:
+    const toggleFavorite = (episode) => {
+        setFavorites(prev => {
+            const exists = prev.some(f => f.id !== episode.id)
+            if (exists) return prev.filter(f => f.id !== episode.id) //remove
+            return [...prev, {...episode, addedAt: new Date().toISOString() }] //add
+        })
+    }
+
+    
 }
