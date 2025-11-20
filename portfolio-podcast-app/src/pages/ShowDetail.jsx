@@ -23,7 +23,7 @@ export default function ShowDetail() {
       .catch(() => setLoading(false))
   }, [id])
    
-  // Loading and Error States
+  // Loading and Error States:
   if (loading) return <div className="text-center py-20">Loading show details...</div>
   if (!show) return <div className="text-center py-20">Show not found</div>
 
