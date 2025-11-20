@@ -14,8 +14,16 @@ export function ThemeProvider({ children }) {
         document.documentElement.classList.toggle('dark', theme === 'dark')
     }, [theme])
 
+    // Toggle Function that flips between Light and Dark
     const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light')
-    
 
-
+    // Provides Theme State and Toggle Function to All Descendents 
+    return (
+        <ThemeContext.Provider value={{ theme, toggleTheme}}>
+            {children}
+        </ThemeContext.Provider>
+    )
 }
+
+//Custom Hook for consuming the Theme Context anywhere in the App:
+export const useTheme = () => useContext(ThemeContext)
