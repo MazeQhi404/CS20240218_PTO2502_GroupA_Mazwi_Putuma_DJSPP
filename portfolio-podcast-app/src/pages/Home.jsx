@@ -57,11 +57,55 @@ export default function Home() {
     }
 
     return (
-        <div>
-            
+        <div className="max-w-7xl mx-auto px-4 py-8">
+
+            //Top Featured Carousel:
+            <RecommendedCarousel shows={shows} />
+
+            //Search + Filters Section:
+            <div className="my-8 space-y-4">
+                <input
+                  type="text"
+                  placeholder="Search podcasts..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full max-w-md px-4 py-3 rounded-lg border dark:bg-gray-800 dark:border-gray-600"
+                />
+
+                <div className="flex flex-wrap gap-4">
+                // Sort Dropdown:
+                   <select 
+                     value={sortBy} 
+                     onChange={(e) => setSortBy(e.target.value)}
+                     className="px-4 py-2 rounded-lg border dark:bg-gray-800">
+                     <option value="updated">Recently Updated</option>
+                     <option value="az">A–Z</option>
+                     <option value="za">Z–A</option>
+                    </select>
+
+                // Genre Filter Dropdown:
+                    <select 
+                      value={selectedGenre} 
+                      onChange={(e) => setSelectedGenre(e.target.value)} 
+                      className="px-4 py-2 rounded-lg border dark:bg-gray-800"
+                      >
+                        <option value="all">All Genres</option>
+                        {Object.entries(GENRE_MAP).map(([id, name]) => (
+                            <option key={id} value={id}>{name}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+            // Grid of Podcast Cards
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {filteredAndSorted.map(show => (
+                    <PodcastCard key={show.id} show={show} />
+                ))}
+            </div>
+            // Message When No results Match Filters
+            {filteredAndSorted.length === 0 && (
+                <p className="text-center py-20 text-gray-500">No podcasts found</p>
+            )}
         </div>
     )
-
-
-
 }
