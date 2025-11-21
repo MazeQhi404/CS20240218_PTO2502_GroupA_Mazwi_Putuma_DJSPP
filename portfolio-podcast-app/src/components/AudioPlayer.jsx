@@ -13,20 +13,20 @@ export default function AudioPlayer() {
       <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700 shadow-2xl z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-4">
             
-            // Episode Cover Image (falls back to placeholder)
+            {/* Episode Cover Image (falls back to placeholder) */}
             <img
                src={currentEpisode.image || '/placeholder.jpg'}
                alt="cover"
                className="w-14 h-14 rounded-lg"
             />
 
-            // Title + show name (truncated if too long)
+            {/* Title + show name (truncated if too long) */}
             <div className="flex-1">
                 <p className="font-medium truncate">{currentEpisode.title}</p>
                 <p className="text-sm text-gray-500 truncate">{currentEpisode.showTitle}</p>
             </div>
             
-            // Play/Pause button - changes icon based on state
+            {/*Play/Pause button - changes icon based on state */}
             <button
                onClick={togglePlay}
                className="p-4 bg-purple-600 hover:bg-purple-700 text-white rounded-full"
@@ -34,7 +34,7 @@ export default function AudioPlayer() {
                 {isPlaying ? <FiPause size={24} /> : <FiPlay size={24} />}
             </button>
             
-            //Progress bar -width updates live via the 'progress' value from AudioContext
+            {/*Progress bar -width updates live via the 'progress' value from AudioContext */}
             <div className="w-64">
                 <div className="h-2 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden">
                     <div

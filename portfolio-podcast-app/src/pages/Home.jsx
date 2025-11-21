@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Link } from 'react-roter-dom'
+import { Link } from 'react-router-dom'
 import { GENRE_MAP } from '../data/genres'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
@@ -18,7 +18,7 @@ export default function Home() {
 
     //Fetch all shows once when page loads
     useEffect(() => {
-        fetch('https://podcast-app.netlify.app')
+        fetch('https://podcast-api.netlify.app')
         .then(res => res.json())
         .then(data => {
             setShows(data)
@@ -59,10 +59,10 @@ export default function Home() {
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
 
-            //Top Featured Carousel:
+            {/*First two genres joined with bullet */}
             <RecommendedCarousel shows={shows} />
 
-            //Search + Filters Section:
+            {/*Search + Filters Section: */}
             <div className="my-8 space-y-4">
                 <input
                   type="text"
@@ -73,7 +73,7 @@ export default function Home() {
                 />
 
                 <div className="flex flex-wrap gap-4">
-                // Sort Dropdown:
+                {/*Sort Dropdown: */}
                    <select 
                      value={sortBy} 
                      onChange={(e) => setSortBy(e.target.value)}
@@ -83,7 +83,7 @@ export default function Home() {
                      <option value="za">Z–A</option>
                     </select>
 
-                // Genre Filter Dropdown:
+                    {/*Genre Filter Dropdown: */}
                     <select 
                       value={selectedGenre} 
                       onChange={(e) => setSelectedGenre(e.target.value)} 
@@ -96,13 +96,13 @@ export default function Home() {
                     </select>
                 </div>
             </div>
-            // Grid of Podcast Cards
+            {/* Grid of Podcast Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {filteredAndSorted.map(show => (
                     <PodcastCard key={show.id} show={show} />
                 ))}
             </div>
-            // Message When No results Match Filters
+            {/*Message When No results Match Filters */}
             {filteredAndSorted.length === 0 && (
                 <p className="text-center py-20 text-gray-500">No podcasts found</p>
             )}

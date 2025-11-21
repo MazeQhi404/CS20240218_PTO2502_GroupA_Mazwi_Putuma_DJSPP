@@ -19,7 +19,7 @@ import { FavoritesProvider } from './contexts/FavoritesContext.jsx'
  */
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/**StrictMode helps identify potential problems in development*/}
+    {/*StrictMode helps identify potential problems in development*/}
     <ThemeProvider>
       <AudioProvider>
         <FavoritesProvider>

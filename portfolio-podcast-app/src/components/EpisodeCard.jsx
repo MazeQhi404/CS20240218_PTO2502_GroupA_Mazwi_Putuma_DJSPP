@@ -1,4 +1,4 @@
-import { useAudio } from '../hooks/useAudio'
+import useAudio from '../hooks/useAudio'
 import useFavorites from '../hooks/useFavorites'
 import { FiHeart, FiPlay } from 'react-icons/fi'
 
@@ -15,7 +15,7 @@ export default function EpisodeCard({ episode, showTitle}) {
         // Card with Hover Elevation:
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 hover:shadow-xl transition">
             
-            // Header: episode number + favorite heart button
+            {/* Header: episode number + favorite heart button */}
             <div className="flex justify-between items-start mb-3">
                 <h4 className="font-semibold">Episode {episode.episode}</h4>
                 <button
@@ -29,15 +29,15 @@ export default function EpisodeCard({ episode, showTitle}) {
                 </button>
             </div>
             
-            // Episode title (max 2 lines)
+            {/*Episode title (max 2 lines) */}
             <h3 className="font-bold text-lg mb-2 line-clamp-2">{episode.title}</h3>
             
-            // Description preview (max 3 lines)
+            {/* Description preview (max 3 lines) */}
             <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-4">
                 {episode.description}
             </p>
             
-            // Play button – changes color/text when this episode is actively playing
+            {/*Play button – changes color/text when this episode is actively playing */}
             <button
                onClick={() => playEpisode({ ...episode, showTitle })}
                className={`w-full py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition ${
