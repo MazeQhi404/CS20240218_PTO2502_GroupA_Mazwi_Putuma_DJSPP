@@ -1,104 +1,153 @@
-# 🎧 DJS Portfolio Piece – Podcast App (React)
+# 🎧 Podcast App – React + Vite
 
-## 📋 Overview
-
-In this final phase, you will enhance the podcast app you've been building throughout the DJS course. The app already includes a landing page with searchable, sortable, and filterable podcast previews, as well as a show detail page with season toggling.
-
-This project introduces key new features including global audio playback, favouriting episodes, deployment best practices, UI enhancements, and optional listening progress tracking.
-
-Your goal is to build a polished, production-ready React application that offers an engaging and seamless user experience.
-
-> **Tip:** You are encouraged to explore the React ecosystem to help implement features efficiently.
-
-## 🎯 Objectives
-
-- Implement a global audio player with full playback control
-- Add support for favouriting episodes with persistent storage
-- Introduce a recommended shows carousel on the landing page
-- Support theme toggling (light/dark mode)
-- Ensure robust routing and deploy the app with professional polish
-- Optionally track listening progress across episodes and sessions
-
-## 🚀 Core Features & User Stories
-
-### 🛠️ Setup and Deployment
-
-- Deploy your app to **Vercel** using a **custom domain or URL**
-- Add a **custom favicon** for easy identification in browser tabs
-- Use tools like [metatags.io](https://metatags.io) to set **rich social media preview metadata**
-- Ensure that direct access to dynamic routes (e.g. `/show/1`) works correctly (SPA routing fallback)
-
-### 🔊 Global Audio Player
-
-- Play audio using the provided **placeholder API**
-- Keep the player **fixed at the bottom** of the screen across all pages
-- Ensure **uninterrupted playback** when navigating between pages
-- Provide **play, pause, seek, and progress tracking**
-- Add a **confirmation prompt** on page reloads during playback
-
-### ❤️ Favourites
-
-- Allow users to **favourite or unfavourite episodes** via a button/icon
-- Use **localStorage** to persist favourites across sessions
-- Provide **visual feedback** for favourited items (e.g., filled heart)
-- Create a **favourites page** displaying all saved episodes
-- Display **associated show and season** for each favourite
-- Show the **date/time added** to favourites
-- **Group favourites by show title**
-- Add **sorting options**:
-  - A–Z / Z–A by title
-  - Newest / Oldest by date added
-
-### 🎠 Recommended Shows Carousel
-
-- Add a **horizontally scrollable carousel** to the landing page
-- Show each show’s **image, title, and genre tags**
-- Support **looping** and navigation via **swipe or arrows**
-- Clicking a carousel item should navigate to the **show’s detail page**
-
-### 🌗 Theme Toggle
-
-- Include a **toggle** for switching between light and dark mode
-- **Persist theme selection** using `localStorage`
-- Ensure the **entire app UI updates smoothly**
-- Use **appropriate icons** (e.g., sun/moon) to indicate current theme
-- Reflect selected theme across all views and components
-
-## 🌟 Stretch Goal – Listening Progress (Optional)
-
-- Save playback position per episode and **resume playback**
-- Mark episodes as **"finished"** once fully played
-- Display **progress indicators** for episodes in progress
-- Allow users to **reset listening history**
-- Save listening history in local storage
-
-## ✅ Deliverables
-
-- A fully functional and deployed podcast app
-- Source code in **GitHub** with clear commit history
-- Live demo link (**Vercel**)
-- (Optional) Short demo video
-
-## 💡 Tips
-
-- Prioritise **user experience** and **clean component structure**
-- Use **React best practices** (components, hooks, state management)
-- Ensure the app is **responsive** and **mobile-friendly**
-- Test localStorage and audio persistence thoroughly
-- Make use of the **React ecosystem** to accelerate development!
+A fully-featured podcast streaming application built as the final portfolio project for DJS. The app provides searchable and browsable shows, detailed show pages with seasons and episodes, a global audio player, favorites system, theme switching, and smooth navigation.
 
 ---
 
-## 🧑‍⚖️ Panel Review
+## 🌸 Features
 
-After submitting your project, you will be required to present your work to a coach or panel of coaches.
+### 🔊 **Global Audio Player**
 
-During this session, you must:
+* Persistent audio player fixed to the bottom of the app
+* Playback continues during navigation
+* Play, pause, seek, and progress tracking
+* Displays current episode info (title, artwork, duration)
+* Guard against accidental tab close during playback
 
-- **Demonstrate** all the features you have implemented in your application.
-- **Explain** how each feature was built, referring directly to your code (e.g., components, state, hooks, storage).
-- Discuss the **decisions** you made during development (e.g., choice of libraries, structure, naming conventions).
-- Break down the **logic** behind key functionalities (e.g., how audio persistence or favouriting works).
-- Be prepared to answer **questions** from the coaches about your project, code structure, and implementation choices.
+### ❤️ **Favorites System**
 
-This is your opportunity to showcase both your technical and problem-solving skills—treat it like a real-world project revsiew.
+* Favorite/unfavorite any podcast episode
+* Uses `localStorage` for permanent persistence
+* Favorites page showing:
+
+  * grouped episodes by show
+  * time and date added
+  * sorting options
+* Visual heart icon indicating favorited status
+
+### 🎠 **Recommended Shows Carousel**
+
+* Responsive carousel using `react-slick`
+* Swipe/drag support
+* Shows 1–5 items depending on screen size
+* Clicking a card opens the show detail page
+
+### 🌗 **Theme Toggle (Light/Dark Mode)**
+
+* Theme stored in `localStorage`
+* Applied before page render to avoid flicker
+* Full Tailwind dark mode support
+* Icon switcher in the app header
+
+### 📚 **Show Detail Page**
+
+* Fetches full show metadata + seasons + episodes
+* Expand/collapse season accordion
+* Episode cards with:
+
+  * play button
+  * favorite button
+  * timestamps
+
+### 🏠 **Home Page**
+
+* Fetches all show previews from the API root
+* Search, browse, and recommendation carousel
+* Responsive grid layout
+
+### ➕ **SPA Enhancements**
+
+* Scroll-to-top on route change
+* Smooth routing via React Router
+* Error + loading states for all API calls
+* Local caching to reduce API calls
+
+---
+
+## 🛠️ Technologies Used: 
+
+| **React** (with Hooks + Context API)  for UI Framework    
+| **Vite**                                    
+| **Tailwind CSS v4 (class-based dark mode)** 
+| **Tailwind utility classes **                 
+| **React Router v6**                         
+| **react-slick**  for the Carousel                        
+| **date-fns** for Dates                              
+| **Vercel** for Deployment                                
+
+### **API**
+
+The app consumes the public Podcast API:
+🔗 **[https://podcast-api.netlify.app](https://podcast-api.netlify.app)**
+
+Endpoints used:
+
+* `/` list of show previews
+* `/id/:id` full show details (with seasons & episodes embedded)
+* `/genre/:id` fetch shows of a single genre
+
+---
+
+## 📦 Installation & Setup
+
+### **1. Clone the repository**
+
+```bash
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
+```
+
+### **2. Install dependencies**
+
+```bash
+npm install
+```
+
+### **3. Run the development server**
+
+```bash
+npm run dev
+```
+
+Your app is now available at:
+**[http://localhost:5173/](http://localhost:5173/)** (or whichever port Vite chooses)
+
+## 🌐 Deployment (Vercel)
+
+The project is configured for zero-config Vercel deployment.
+
+### **Deploy steps:**
+
+1. Push the project to GitHub
+2. Visit [https://vercel.com](https://vercel.com)
+3. Click **Add New → Project**
+4. Import your GitHub repo
+5. Vercel auto-detects Vite and sets:
+
+   * Build command → `npm run build`
+   * Output directory → `dist`
+6. Click **Deploy**
+
+## 🧡 Usage Examples
+
+### Play an Episode
+
+1. Navigate to any show
+2. Open a season
+3. Click **▶ Play** on an episode
+4. The global audio player begins playing at the bottom
+
+### Favorite an Episode
+
+1. Click the ♥ icon
+2. Visit `/favorites` to view saved episodes
+3. Your favorites persist even after page reload
+
+### Toggle Theme
+
+Click the 🌙 / ☀️ button in the header
+Your choice is saved across sessions
+
+Podcast data provided by:
+🔗 [https://podcast-api.netlify.app](https://podcast-api.netlify.app)
+
