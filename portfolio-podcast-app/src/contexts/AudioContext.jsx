@@ -1,71 +1,75 @@
 import { createContext, useContext, useRef, useState, useEffect } from "react";
 
-// Creates a global audio context:
-const AudioContext = createContext()
+export const AudioContext = createContext();
 
-//Provider that manages a single <audio> element for the entire app:
 export function AudioProvider({ children }) {
-    // Single persistant Audio instance via useRef (survives re-renders)
-    const audioRef = useRef(new Audio())
+  const audioRef = useRef(typeof Audio !== "undefined" ? new Audio() : null);
+  const [currentEpisode, setCurrentEpisode] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
 
-    //Currently playing episode object:
-    const [currentEpisode, setCurrentEpisode] = useState(null)
-
-    //Playback state:
-    const [isPlaying, setIsPlaying] = useState(false)
-
-    //Playback progress as percentage (0-100):
-    const [progress, setProgress] = useState(0)
-
-    //Start playing a new episode (replaces current src and plays)
-    const playEpisode = (episode) => {
-        audioRef.current.src = episode.file 
-        audioRef.current.play()
-        setCurrentEpisode(episode)
-        setIsPlaying(true)
+  const playEpisode = (episode) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    try { audio.pause(); } catch(e){}
+    setProgress(0);
+    audio.src = episode.file;
+    setCurrentEpisode(episode);
+    const p = audio.play();
+    if (p && typeof p.then === 'function') {
+      p.then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+    } else {
+      setIsPlaying(!audio.paused);
     }
+  };
 
-    // Toggle play/pause on the current audio element
-    const togglePlay = () => {
-        isPlaying ? audioRef.current.pause() : audioRef.current.play()
-        setIsPlaying(!isPlaying)
-    }
+  const togglePlay = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.paused) { audio.play(); setIsPlaying(true); }
+    else { audio.pause(); setIsPlaying(false); }
+  };
 
-    // Updates progress bar as audio plays and resets isPlaying when track ends:
-    useEffect(() => {
-        const audio = audioRef.current
-        const updateProgress = () => setProgress((audio.currentTime / audio.duration) * 100 || 0)
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const update = () => {
+      const dur = audio.duration || 0;
+      const pct = dur > 0 ? (audio.currentTime / dur) * 100 : 0;
+      setProgress(Number.isFinite(pct) ? Math.max(0, Math.min(100, pct)) : 0);
+    };
+    const onEnd = () => setIsPlaying(false);
+    const onLoaded = () => update();
+    audio.addEventListener('timeupdate', update);
+    audio.addEventListener('ended', onEnd);
+    audio.addEventListener('loadedmetadata', onLoaded);
+    return () => {
+      audio.removeEventListener('timeupdate', update);
+      audio.removeEventListener('ended', onEnd);
+      audio.removeEventListener('loadedmetadata', onLoaded);
+    };
+  }, []);
 
-        audio.addEventListener('timeupdate', updateProgress)
-        audio.addEventListener('ended', () => setIsPlaying(false))
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (isPlaying) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isPlaying]);
 
-        //Cleanup listeners on unmount
-        return () => {
-            audio.removeEventListener('timeupdate', updateProgress)
-            audio.removeEventListener('ended', () => setIsPlaying(false))
-        }
-    }, []) // Empty dependency - runs once on mount
-
-    //Warnes user if they try to close/refresh the page while audio is playing:
-    useEffect(() => {
-        const handleBeforeUnload = (e) => {
-            if (isPlaying) {
-                e.preventDefault()
-                e.returnValue = '' //Triggers browser confirmation dialog
-            }
-        }
-        window.addEventListener('beforeunload', handleBeforeUnload)
-        return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-    }, [isPlaying])
-
-    // Exposes audio state and controls to the entire component tree
-
-    return (
-        <AudioContext.Provider value={{ currentEpisode, isPlaying, progress, playEpisode, togglePlay }}>
-            {children}
-        </AudioContext.Provider>
-    )
+  return (
+    <AudioContext.Provider value={{ audioRef, currentEpisode, isPlaying, progress, playEpisode, togglePlay }}>
+      {children}
+    </AudioContext.Provider>
+  );
 }
 
-// Custom Hook to access audio controls from any component :
-export const useAudio = () => useContext(AudioContext)
+export const useAudio = () => {
+  const ctx = useContext(AudioContext);
+  if (!ctx) throw new Error('useAudio must be used within AudioProvider');
+  return ctx;
+};
