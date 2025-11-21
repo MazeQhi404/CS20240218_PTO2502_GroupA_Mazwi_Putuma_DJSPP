@@ -1,36 +1,22 @@
-/**
- * Application Entry Point:
- */
-
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
+import { BrowserRouter } from 'react-router-dom'
+import App from './App'
 import './index.css'
+import { ThemeProvider } from './contexts/ThemeContext'
+import { FavoritesProvider } from './contexts/FavoritesContext'
+import { AudioProvider } from './contexts/AudioContext'
 
-/**
- * Global Context Providers 
- */
-import { ThemeProvider } from './contexts/ThemeContext.jsx'
-import { AudioProvider } from './contexts/AudioContext.jsx'
-import { FavoritesProvider } from './contexts/FavoritesContext.jsx'
-
-/**
- * Render The App:
- */
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/*StrictMode helps identify potential problems in development*/}
-    <ThemeProvider>
-      <AudioProvider>
+    <BrowserRouter>
+      <ThemeProvider>
         <FavoritesProvider>
-          <App/>
+          <AudioProvider>
+            <App />
+          </AudioProvider>
         </FavoritesProvider>
-      </AudioProvider >
-    </ThemeProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   </React.StrictMode>
 )
-
-/**
- * NOTES:
- * All child components now have access to theme, audio and favorites
- */
