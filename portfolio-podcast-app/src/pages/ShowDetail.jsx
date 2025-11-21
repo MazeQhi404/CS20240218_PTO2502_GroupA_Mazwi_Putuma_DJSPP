@@ -1,93 +1,149 @@
-import { useState, useEffect} from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { GENRE_MAP } from '../data/genres'
-import { formatDistanceToNow } from 'date-fns'
-import EpisodeCard from '../components/EpisodeCard'
+// src/pages/ShowDetail.jsx
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import EpisodeCard from "../components/EpisodeCard";
+import { formatDistanceToNow } from "date-fns";
 
-//Page that shows full details for a single podcast show
 export default function ShowDetail() {
-  const { id } = useParams()                         // Get Show ID from URL
-  const [show, setShow] = useState(null)             // Full Show Data
-  const [loading, setLoading] = useState(true).      // Loading State
-  const [openSeason, setOpenSeason] = useState(null) // Which Season is Expanded
-   
-  // Fetch show data by ID when the page loads or ID changes
+  const { id } = useParams();
+  const [show, setShow] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [openSeason, setOpenSeason] = useState(null);
+
   useEffect(() => {
-    fetch(`https://podcast-api.netlify.app/id/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        setShow(data)
-        setLoading(false)
-        setOpenSeason(data.seasons[0]?.season || null) // open first season by default
-      })
-      .catch(() => setLoading(false))
-  }, [id])
-   
-  // Loading and Error States:
-  if (loading) return <div className="text-center py-20">Loading show details...</div>
-  if (!show) return <div className="text-center py-20">Show not found</div>
+    let mounted = true;
+
+    async function load() {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const res = await fetch(`https://podcast-api.netlify.app/id/${id}`);
+        if (!res.ok) {
+          throw new Error(`API error ${res.status}`);
+        }
+
+        const data = await res.json();
+        if (!mounted) return;
+
+        setShow(data);
+
+        // open first season by default
+        if (Array.isArray(data.seasons) && data.seasons.length > 0) {
+          setOpenSeason(data.seasons[0].season);
+        }
+      } catch (err) {
+        if (mounted) {
+          setError(err.message || "Failed to load show");
+        }
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, [id]);
+
+  if (loading) return <div className="max-w-7xl mx-auto px-4 py-8">Loading…</div>;
+  if (error)
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8 text-red-600">Error: {error}</div>
+    );
+  if (!show)
+    return <div className="max-w-7xl mx-auto px-4 py-8">Show not found.</div>;
+
+  const updatedDate = show.updated ? new Date(show.updated) : null;
+
+  // ALWAYS convert seasons to a number
+  const seasonsCount = Array.isArray(show.seasons)
+    ? show.seasons.length
+    : typeof show.seasons === "number"
+    ? show.seasons
+    : 0;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <Link to="/" className="inline-block mb-6 text-purple-600 hover:underline">
-        ← Back to Home
-      </Link>
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* HEADER */}
+      <div className="flex flex-col md:flex-row gap-8">
+        <img
+          src={show.image || "https://via.placeholder.com/400?text=No+Image"}
+          alt={show.title}
+          className="w-full md:w-64 h-auto rounded shadow"
+        />
 
-      <div className="grid md:grid-cols-3 gap-8">
-        <div className="md:col-span-1">
-          <img
-            src={show.image}
-            alt={show.title}
-            className="w-full rounded-xl shadow-2xl"
-          />
-        </div>
-
-        <div className="md:col-span-2">
-          <h1 className="text-4xl font-bold mb-4">{show.title}</h1>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {show.genres.map(gid => (
-              <span key={gid} className="genre-tag">
-                {GENRE_MAP[gid] || 'Unknown'}
-              </span>
-            ))}
-          </div>
-          <p className="text-sm text-gray-500 mb-6">
-            Updated {formatDistanceToNow(new Date(show.updated), { addSuffix: true })}
-          </p>
-          <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold mb-2">{show.title}</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             {show.description}
           </p>
+
+          <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+            <span>Seasons: {seasonsCount}</span>
+            <span className="mx-3">•</span>
+            <span>
+              {updatedDate
+                ? `Updated ${formatDistanceToNow(updatedDate, {
+                    addSuffix: true,
+                  })}`
+                : "Updated: unknown"}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="mt-12">
-        <h2 className="text-3xl font-bold mb-8">Seasons</h2>
-        {show.seasons.map(season => (
-          <div key={season.season} className="mb-6">
-            <button
-              onClick={() => setOpenSeason(openSeason === season.season ? null : season.season)}
-              className="w-full text-left bg-gray-100 dark:bg-gray-800 rounded-lg p-4 flex justify-between items-center hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-            >
-              <div>
-                <span className="text-xl font-semibold">Season {season.season}</span>
-                <span className="ml-4 text-gray-600 dark:text-gray-400">
-                  {season.episodes.length} episodes
+      {/* SEASONS */}
+      <div className="mt-10">
+        {Array.isArray(show.seasons) && show.seasons.length > 0 ? (
+          show.seasons.map((season) => (
+            <div key={season.season} className="mb-8">
+              <button
+                onClick={() =>
+                  setOpenSeason((s) =>
+                    s === season.season ? null : season.season
+                  )
+                }
+                className="w-full flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-800 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+              >
+                <div>
+                  <div className="font-semibold">Season {season.season}</div>
+                  <div className="text-xs text-gray-500">
+                    {Array.isArray(season.episodes)
+                      ? season.episodes.length
+                      : 0}{" "}
+                    episodes
+                  </div>
+                </div>
+                <span className="text-xl">
+                  {openSeason === season.season ? "▲" : "▼"}
                 </span>
-              </div>
-              <span className="text-2xl">{openSeason === season.season ? '−' : '+'}</span>
-            </button>
+              </button>
 
-            {openSeason === season.season && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                {season.episodes.map(episode => (
-                  <EpisodeCard key={episode.episode} episode={episode} showTitle={show.title} />
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+              {openSeason === season.season && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                  {Array.isArray(season.episodes) &&
+                    season.episodes.map((ep) => (
+                      <EpisodeCard
+                        key={`${show.id}-${season.season}-${ep.episode}`}
+                        episode={{
+                          ...ep,
+                          showId: show.id,
+                          season: season.season,
+                        }}
+                        showTitle={show.title}
+                      />
+                    ))}
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="text-sm text-gray-500">No episodes available.</div>
+        )}
       </div>
     </div>
-  )
+  );
 }
-
