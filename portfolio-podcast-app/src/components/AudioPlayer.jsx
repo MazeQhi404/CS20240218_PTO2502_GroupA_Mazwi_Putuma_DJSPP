@@ -1,50 +1,63 @@
+import { useEffect, useRef, useState } from 'react'
 import useAudio from '../hooks/useAudio'
-import { FiPause, FiPlay } from 'react-icons/fi'
+import { FiPlay, FiPause } from 'react-icons/fi'
 
-//Fixed Mini-Player that appears when an episode is loaded
 export default function AudioPlayer() {
-    const { currentEpisode, isPlaying, progress, togglePlay } = useAudio()
-    
-    // Hide player when nothing is loaded
-    if (!currentEpisode) return null
+  const { currentEpisode, isPlaying, progress, togglePlay, audioRef } = useAudio()
+  const [localProgress, setLocalProgress] = useState(0)
+  const barRef = useRef(null)
 
-    return (
-      //Fixed at bottom, full-width, high z-index so it's always visible
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700 shadow-2xl z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-4">
-            
-            {/* Episode Cover Image (falls back to placeholder) */}
-            <img
-               src={currentEpisode.image || '/placeholder.jpg'}
-               alt="cover"
-               className="w-14 h-14 rounded-lg"
-            />
+  useEffect(() => setLocalProgress(progress ?? 0), [progress])
 
-            {/* Title + show name (truncated if too long) */}
-            <div className="flex-1">
-                <p className="font-medium truncate">{currentEpisode.title}</p>
-                <p className="text-sm text-gray-500 truncate">{currentEpisode.showTitle}</p>
+  const onSeek = (e) => {
+    const audio = audioRef?.current
+    if (!audio) return
+    const rect = barRef.current.getBoundingClientRect()
+    const clickX = e.clientX - rect.left
+    const pct = Math.max(0, Math.min(1, clickX / rect.width))
+    if (!isNaN(audio.duration) && audio.duration > 0) {
+      audio.currentTime = pct * audio.duration
+      setLocalProgress(pct * 100)
+    }
+  }
+
+  if (!currentEpisode) return null
+
+  return (
+    <div className="fixed left-0 right-0 bottom-0 z-50">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur flex items-center gap-4 p-3 rounded-t-lg shadow-lg">
+          <div className="flex items-center gap-3 min-w-0">
+            <img src={currentEpisode.image || currentEpisode.showImage || 'https://via.placeholder.com/80'} alt={currentEpisode.title || currentEpisode.showTitle} className="w-16 h-16 object-cover rounded" />
+            <div className="min-w-0">
+              <div className="text-sm font-semibold truncate">{currentEpisode.title ?? 'Untitled'}</div>
+              <div className="text-xs text-gray-500 truncate">{currentEpisode.showTitle ?? ''}</div>
             </div>
-            
-            {/*Play/Pause button - changes icon based on state */}
-            <button
-               onClick={togglePlay}
-               className="p-4 bg-purple-600 hover:bg-purple-700 text-white rounded-full"
-            >
-                {isPlaying ? <FiPause size={24} /> : <FiPlay size={24} />}
-            </button>
-            
-            {/*Progress bar -width updates live via the 'progress' value from AudioContext */}
-            <div className="w-64">
-                <div className="h-2 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div
-                    className="h-full bg-purple-600 transition-all duration-300"
-                    style={{ width: `${progress}%` }}
-                />
+          </div>
+
+          <div className="flex-1">
+            <div className="flex items-center gap-4">
+              <button onClick={togglePlay} className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:scale-105 transition" aria-label={isPlaying ? 'Pause' : 'Play'}>
+                {isPlaying ? <FiPause size={20} /> : <FiPlay size={20} />}
+              </button>
+
+              <div className="flex-1">
+                <div ref={barRef} onClick={onSeek} className="h-2 bg-gray-200 dark:bg-gray-800 rounded cursor-pointer relative">
+                  <div style={{ width: `${Math.max(0, Math.min(100, localProgress))}%` }} className="h-2 bg-purple-600 dark:bg-green-500 rounded transition-[width]" />
                 </div>
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>{Math.floor((audioRef?.current?.currentTime ?? 0))}s</span>
+                  <span>{Math.floor((audioRef?.current?.duration ?? 0)) ? `${Math.floor(audioRef.current.duration)}s` : ''}</span>
+                </div>
+              </div>
             </div>
-        </div>
-       </div>
-    )
+          </div>
 
+          <div className="w-28 text-right text-xs text-gray-600">
+            <div>Volume —</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
