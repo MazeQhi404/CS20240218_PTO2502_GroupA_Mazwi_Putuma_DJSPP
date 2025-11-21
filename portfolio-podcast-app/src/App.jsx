@@ -6,6 +6,14 @@ import Header from './components/Header'
 import AudioPlayer from './components/AudioPlayer'
 import ScrollToTop from './components/ScrollToTop'
 
+/**
+ * App root component
+ * ------------------
+ * - Provides Layout and Routes for the application.
+ * - Includes persistent Header and AudioPlayer.
+ * - Wraps main content with padding-bottom so AudioPlayer doesn't overlap content.
+ */
+
 export default function App() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 pb-28">

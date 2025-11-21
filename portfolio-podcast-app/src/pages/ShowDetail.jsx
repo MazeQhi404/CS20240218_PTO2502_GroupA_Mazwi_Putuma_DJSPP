@@ -4,6 +4,20 @@ import { useParams } from "react-router-dom";
 import EpisodeCard from "../components/EpisodeCard";
 import { formatDistanceToNow } from "date-fns";
 
+/**
+ * ShowDetail Page
+ * ---------------
+ * Fetches full show metadata from `/id/:id` and renders:
+ * - show header (image, title, description, updated)
+ * - season accordion (open / close)
+ * - EpisodeCard list for selected season
+ *
+ * Behavior:
+ * - Robust loading + error states.
+ * - Guards against missing seasons/episodes arrays.
+ * - Uses composite keys for EpisodeCard entries when necessary.
+ */
+
 export default function ShowDetail() {
   const { id } = useParams();
   const [show, setShow] = useState(null);

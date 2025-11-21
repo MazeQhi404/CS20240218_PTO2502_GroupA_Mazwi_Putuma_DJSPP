@@ -2,6 +2,19 @@ import { Link } from 'react-router-dom'
 import { GENRE_MAP } from '../data/genres'
 import { formatDistanceToNow } from 'date-fns'
 
+/**
+ * PodcastCard
+ * -----------
+ * Clickable card linking to show detail:
+ * - shows image with fallback
+ * - title (truncated), seasons count
+ * - genre tags (uses GENRE_MAP) with safe fallback
+ * - updated timestamp (uses date-fns) with guard
+ *
+ * Props:
+ * - show: preview object from API root
+ */
+
 export default function PodcastCard({ show }) {
   const updatedDate = show?.updated ? new Date(show.updated) : null
   return (

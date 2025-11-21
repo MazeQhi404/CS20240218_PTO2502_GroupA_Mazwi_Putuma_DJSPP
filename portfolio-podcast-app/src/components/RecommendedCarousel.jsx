@@ -3,6 +3,21 @@ import { GENRE_MAP } from '../data/genres'
 import Slick from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
+
+/**
+ * RecommendedCarousel
+ * -------------------
+ * Responsive horizontal carousel of shows using react-slick.
+ *
+ * Props:
+ * - shows: array of preview shows
+ *
+ * Implementation notes:
+ * - Defensive import/interop (handles CJS/ESM exports).
+ * - Uses slice/sort to randomise a recommended set of shows.
+ * - Uses safe fallbacks for images and genres.
+ */
+
 const Slider = Slick && Slick.default ? Slick.default : Slick
 
 const settings = {

@@ -1,6 +1,17 @@
 import { useMemo } from 'react'
 import { useFavorites } from '../contexts/FavoritesContext.jsx'
 
+/**
+ * Favorites Page
+ * --------------
+ * Displays user's saved favourite episodes grouped by show.
+ *
+ * Behavior:
+ * - Reads favorites from useFavorites (FavoritesContext).
+ * - Groups episodes by showTitle and renders them with remove (toggle) actions.
+ * - Shows addedAt timestamp formatted to local string.
+ */
+
 export default function Favorites() {
   // use context directly to ensure provider exists
   const { favorites, toggleFavorite } = useFavorites()

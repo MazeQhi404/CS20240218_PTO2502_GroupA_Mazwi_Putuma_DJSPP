@@ -2,6 +2,18 @@ import { Link } from 'react-router-dom'
 import { FiSun, FiMoon, FiHeart } from 'react-icons/fi'
 import { useTheme } from '../contexts/ThemeContext.jsx'
 
+/**
+ * Header
+ * ------
+ * Top navigation with:
+ * - site title link to home
+ * - link to favorites page
+ * - theme toggle button (uses useTheme)
+ *
+ * Accessibility:
+ * - Theme toggle includes aria-label and title.
+ */
+
 export default function Header() {
   const { theme, toggleTheme } = useTheme()
 

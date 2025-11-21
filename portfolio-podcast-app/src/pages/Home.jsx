@@ -2,6 +2,17 @@ import { useEffect, useState } from 'react'
 import PodcastCard from '../components/PodcastCard'
 import RecommendedCarousel from '../components/RecommendedCarousel'
 
+/**
+ * Home Page
+ * ---------
+ * Fetches show previews from API root `/` and renders:
+ * - RecommendedCarousel at top
+ * - Responsive grid of PodcastCard components
+ *
+ * Behavior:
+ * - Handles loading state and logs errors.
+ */
+
 export default function Home() {
   const [shows, setShows] = useState([])
   const [loading, setLoading] = useState(true)
