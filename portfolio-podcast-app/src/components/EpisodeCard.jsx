@@ -2,6 +2,24 @@ import useAudio from '../hooks/useAudio'
 import useFavorites from '../hooks/useFavorites'
 import { FiHeart, FiPlay } from 'react-icons/fi'
 
+/**
+ * EpisodeCard
+ * -----------
+ * Renders a single episode card with:
+ * - episode title & description
+ * - favourite (heart) button
+ * - play button (calls playEpisode)
+ *
+ * Props:
+ * - episode: { episode, title, description, file, image, season, showId, ... }
+ * - showTitle: string
+ *
+ * Implementation notes:
+ * - Uses a composite stable id when API doesn't provide episode.id.
+ * - Visual feedback for currently playing state (isCurrentlyPlaying && isPlaying).
+ * - Toggles favorites via FavoritesContext.
+ */
+
 export default function EpisodeCard({ episode, showTitle }) {
   const { playEpisode, currentEpisode, isPlaying } = useAudio()
   const { isFavorite, toggleFavorite } = useFavorites()

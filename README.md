@@ -128,6 +128,9 @@ The project is configured for zero-config Vercel deployment.
    * Output directory → `dist`
 6. Click **Deploy**
 
+### Link to Deployment: 
+cs20240218pto2502groupamazeputumadjspp-65v1fxc3s.vercel.app
+
 ## 🧡 Usage Examples
 
 ### Play an Episode

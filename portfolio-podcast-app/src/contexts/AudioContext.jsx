@@ -1,5 +1,22 @@
 import { createContext, useContext, useRef, useState, useEffect } from "react";
 
+/**
+ * AudioContext
+ * ----------------
+ * Global audio provider for the app.
+ *
+ * Responsibilities:
+ * - Creates and manages a single <audio> element (useRef) shared across the app.
+ * - Exposes: audioRef, currentEpisode, isPlaying, progress, playEpisode(), togglePlay().
+ * - Tracks timeupdate/ended/loadedmetadata and updates progress and play state.
+ * - Adds a beforeunload handler to warn users about leaving while playback is active.
+ *
+ * Notes:
+ * - Keeps audio instance out of React state (useRef) to avoid re-creating element on rerenders.
+ * - playEpisode replaces src and attempts to play, handling returned Promise.
+ * - Consumers should call playEpisode with an object that contains `file` (audio URL) and stable `id`.
+ */
+
 export const AudioContext = createContext();
 
 export function AudioProvider({ children }) {

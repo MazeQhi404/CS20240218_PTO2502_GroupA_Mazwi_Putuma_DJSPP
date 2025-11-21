@@ -1,5 +1,21 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
+/**
+ * FavoritesContext
+ * ----------------
+ * Manages user's favourited episodes with persistence.
+ *
+ * Responsibilities:
+ * - Loads favourites from localStorage on init.
+ * - Persists changes back to localStorage.
+ * - Exposes: favorites array, toggleFavorite(episode), isFavorite(id).
+ *
+ * Notes:
+ * - Ensures stored value is parsed safely with try/catch.
+ * - Adds `addedAt` timestamp when adding favorites.
+ * - Expects a stable `id` on episodes; if missing, caller should provide a composite id.
+ */
+
 export const FavoritesContext = createContext();
 
 export function FavoritesProvider({ children }) {

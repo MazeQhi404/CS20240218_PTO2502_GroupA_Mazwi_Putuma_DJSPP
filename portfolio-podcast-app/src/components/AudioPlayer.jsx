@@ -2,6 +2,22 @@ import { useEffect, useRef, useState } from 'react'
 import useAudio from '../hooks/useAudio'
 import { FiPlay, FiPause } from 'react-icons/fi'
 
+/**
+ * AudioPlayer
+ * -----------
+ * Persistent bottom-fixed audio player that reads from AudioContext.
+ *
+ * Features:
+ * - Displays artwork, title, show title.
+ * - Play/pause button that calls togglePlay().
+ * - Clickable progress bar that seeks audioRef.current.currentTime.
+ * - Shows currentTime and duration (seconds).
+ *
+ * Implementation notes:
+ * - Hidden when no currentEpisode is loaded (returns null).
+ * - Uses inline seek calculation based on click position.
+ */
+
 export default function AudioPlayer() {
   const { currentEpisode, isPlaying, progress, togglePlay, audioRef } = useAudio()
   const [localProgress, setLocalProgress] = useState(0)
