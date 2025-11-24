@@ -8,13 +8,13 @@ import { FavoritesProvider } from './contexts/FavoritesContext'
 import { AudioProvider } from './contexts/AudioContext'
 
 /**
- * Application entrypoint
+ * Application entry point
  * ----------------------
  * - Renders <App /> wrapped with providers and BrowserRouter.
  * - Provider order: ThemeProvider -> FavoritesProvider -> AudioProvider -> App
  *
  * Notes:
- * - BrowserRouter must be a single instance at app root (avoid duplicating Router inside App).
+ * - BrowserRouter must be a single instance at app root (avoids duplicating Router inside App).
  */
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -30,3 +30,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   </React.StrictMode>
 )
+
+
